@@ -1,7 +1,7 @@
 //空でない最終列の数字：行；途中でリクエストが止まってしまった時途中から再開する時に使用する
-function getNextRow(col){
-  for(var i = 1;i <= sheet.getLastRow();i++){
-    var key = sheet.getRange(i,col).getValue();
+function getNextRow(col, anySheet){
+  for(var i = 1;i <= anySheet.getLastRow();i++){
+    var key = anySheet.getRange(i,col).getValue();
     if(key == null || key == ''){
       Logger.log(col + '列の空白じゃない最終行は'　+ i + '行です');
       return i;
@@ -15,8 +15,8 @@ function writeUrl(){
   var keywords = sheet.getRange(2,1,sheet.getLastRow()).getValues();
   var keywords = Array.prototype.concat.apply([],keywords);
   //2行目の空でない最終行
-  var nextRow = getNextRow(2);
   //nextRowから最終行までクローリング
+  var nextRow = getNextRow(2,sheet);
   for(var i = 0;i <= keywords.length - nextRow;i++){
     //検索結果：1行目のキーワード、追加の検索条件；
     var url = getKeywordSite(keywords[i], addInfo);
@@ -27,8 +27,10 @@ function writeUrl(){
     //2行目に結果を記録する
     sheet.getRange(nextRow + i, 2).setValue(url);
     //次の処理までに0.5秒のインターバル
-    Utilities.sleep(500);
+    Utilities.sleep(1000);
   }
+  //エラー率を記録
+  getRatio();
 }
 
 //Yahooにブロックされたキーワードだけもう一度クローリングする
@@ -50,4 +52,6 @@ function overWriteUrl(){
       sheet.getRange(i, 2).setValue(url);
     }
   }
+  //エラー率を記録
+  getRatio();
 }

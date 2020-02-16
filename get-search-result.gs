@@ -2,6 +2,7 @@
 function getKeywordSite(keyword, addInfo) {
   //クローラーブロック対策
   var url = getRandUrl(keyword, addInfo);
+  //return url//+0
   //urlにリクエストを送信する
   var payload = {"value": "key"};
   var response = UrlFetchApp.fetch(
